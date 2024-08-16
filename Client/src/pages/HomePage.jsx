@@ -1,6 +1,7 @@
 
 import React, {useEffect} from 'react'
 import axios from "axios" ; 
+import Layout from '../components/Layout';
 
 const HomePage = () => {
 
@@ -31,9 +32,12 @@ const HomePage = () => {
   }, [])
 
   return (
-    <div>
+
+    {/* Wrapping the homepage with 'Layout' that includes the sidebar, header, etc is consistently applied across different pages, including the 'HomePage' */}
+
+    <Layout>
       <h1>Home Page</h1>
-    </div>
+    </Layout>
   )
 }
 

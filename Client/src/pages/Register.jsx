@@ -3,10 +3,14 @@ import { Form, Input, message } from "antd";
 import '../styles/RegisterStyles.css' ; 
 import {Link, useNavigate} from 'react-router-dom' ;
 import axios from "axios" ; 
+import { useDispatch } from "react-redux";
+import { showLoading, hideLoading } from "../redux/features/alertSlice";
 
 // Form handler
 
 const Register = () => {
+
+  const dispatch = useDispatch() ; 
 
   const navigate = useNavigate() ; // navigate to different routes in our application
 
@@ -18,11 +22,15 @@ const Register = () => {
 
   try{
 
+    dispatch(showLoading()) ; 
+
     // sends an HTTP POST request to the specified URL. The 'values' object is sent as the body of the request, which contains the user's registration data. 
 
     // This request is sent to to the backend API to register the user. The backend processes this data, saves the new user to the database, and returns a response 
 
-    const res = await axios.post('/api/v1/user/register', values)
+    const res = await axios.post('/api/v1/user/register', values) ; 
+
+    dispatch(hideLoading()) ; 
 
     if(res.data.success){
       message.success('Registration successfully') ; 
@@ -32,6 +40,7 @@ const Register = () => {
       message.error(res.data.message) ; 
     }
   }catch(error){
+    dispatch(hideLoading()) ; 
     console.log(error) ; 
     message.error("Something went wrong")
   }

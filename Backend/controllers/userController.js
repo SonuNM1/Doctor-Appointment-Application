@@ -102,7 +102,9 @@ const authController = async (req, res)=>{
 
         // Step 1: Retrieve the user from the database using the user ID from the request body 
 
-        const user = await userModel.findOne({_id: req.body.userId}) ;
+        const user = await userModel.findById({_id: req.body.userId}) ;
+
+        user.password = undefined ; 
 
         // Step 2: Check if the user exists 
 
@@ -121,10 +123,7 @@ const authController = async (req, res)=>{
 
             res.status(200).send({
                 success: true,
-                data: {
-                    name: user.name,        // including the user's name in the response
-                    email: user.email,      // including the user's email in the response 
-                }
+                data: user
             })
         }
 

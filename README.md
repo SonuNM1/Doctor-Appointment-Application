@@ -69,3 +69,16 @@
     Client: Sends request to protected routes, including the token in the 'Authorization' header
 
     Server: Validates the token, and if valid, processes the request
+
+
+
+### Why clear the localStorage (localStorage.clear())
+
+
+- If the API request to fetch user data fails or returns a response indicating that the request was unsuccessful ("res.data.success" if "false"), this suggests that the token stored in 'localStorage' might be invalid, expired, or no longer associated with a valid user session. 
+
+- By clearing 'localStorage', the app removes the potentially invalid or corrupted token, preventing further unauthorized or erroneous requests taht might rely on that token. 
+
+- If there's an error in the process of making the API request (a network error, server issue, or an invalid token), it's safer to clear 'localStorage'. The error could mean that the current session is no longer valid. 
+
+- Clearing 'localStorage' in this context ensures that the app doesn't hold onto a potentially invalid token. This forces the user to authenticate again, which helps maintain security and ensures that the user is interacting with the application in a valid state. 

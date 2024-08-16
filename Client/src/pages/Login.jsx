@@ -1,5 +1,7 @@
 import React from "react";
 import { Form, Input, message } from "antd";
+import { useDispatch } from "react-redux";
+import { showLoading, hideLoading} from "../redux/features/alertSlice";
 import '../styles/RegisterStyles.css' ; 
 import {Link, useNavigate} from 'react-router-dom' ;
 import axios from "axios" ; 
@@ -8,6 +10,7 @@ import axios from "axios" ;
 
 const Login = () => {
 
+  const dispatch = new useDispatch() ;
   const navigate = useNavigate() ; 
 
   // When the user submits the login form, capture the form data (email, password) using the 'onFinish' handler
@@ -17,9 +20,15 @@ const Login = () => {
 
     try{
 
+      dispatch(showLoading()) ; 
+
       // Send POST request to the backend login endpoint 
 
       const res = await axios.post('/api/v1/user/login', values) ;
+
+      window.location.reload() ;    // reloads the current page 
+
+      dispatch(hideLoading()) ;
 
       // Check if login was successful 
 
@@ -33,6 +42,7 @@ const Login = () => {
       }
 
     }catch(error){
+      dispatch(hideLoading()) ;
       console.log(error);
       message.error('Something went wrong') ; 
     }
