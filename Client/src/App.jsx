@@ -8,6 +8,7 @@ import { useSelector } from "react-redux"; // React-redux hook that allows us to
 import Spinner from "./components/Spinner";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
+import ApplyDoctor from "./pages/ApplyDoctor";
 
 function App() {
   const { loading } = useSelector((state) => state.alerts); // extracts 'loading' state from the Redux store. The 'state.alerts' part accesses the 'alerts' slice in the Rdux store, and 'loading' is the property in the slice. This will track whether the app is currently in a loading state based on the Redux logic
@@ -27,6 +28,12 @@ function App() {
             <Route
               path="/"
               element=<ProtectedRoute>{<HomePage />}</ProtectedRoute>
+            />
+
+          <Routes>
+            <Route
+              path="/apply-doctor"
+              element=<ProtectedRoute>{<ApplyDoctor />}</ProtectedRoute>
             />
 
             <Route
