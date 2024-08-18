@@ -2,6 +2,8 @@
 const userModel = require('../models/userModels') ; 
 const bcrypt = require("bcrypt") ; 
 const jwt = require("jsonwebtoken") ; 
+const doctorModel = require("../models/doctorModel") ; 
+
 
 // Register callback
 
@@ -138,7 +140,66 @@ const authController = async (req, res)=>{
 }
 
 
-module.exports = {loginController, registerController, authController} ; 
+
+/* Apply Doctor Controller - process for a user applying for a doctor account on our application. The controller handles 
+                            creating a new doctor entry in the database and notifying the admin about the new application request                          
+*/
+
+const applyDoctorController = async (req, res)=>{
+    try{
+
+        // Creating a new doctor entry
+
+       const newDoctor = await doctorModel({
+        ...req.body,    // Spread the incoming req body to include all the submitted fields (like name, email, etc)
+        status:'pending' // default status 'pending'
+    })
+
+       await newDoctor.save() ;     // save the new doctor entry to the database 
+
+       // Finding an admin user to notify
+
+       const adminUser = await usrModel.findOne({isAdmin: true}); 
+
+        // Retrieve the admin user's notification array 
+
+       const notification = adminUser.notification  ; 
+
+        // Adding a new notification to the admin's notification array 
+
+       notification.push({
+        type: 'apply-doctor-request',   // type of notification
+        message: `${newDoctor.firstName} ${newDoctor.lastNname} has applied for a Doctor account`,      
+        data: {
+            doctorId: newDoctor._id,      // Include the doctor's ID in the notification data 
+            name: newDoctor.firstName + " " + newDoctor.lastName,       // include the doctor's fullname
+            onClickPath: '/admin/doctors'   // Path the admin should visit when clicking on the notification
+        }
+       })
+
+       // updating the admin user's notifications in the database 
+
+       await userModel.findByIdAndUpdate(adminUser._id, {notification}) ; 
+
+       // Sending a response back to the client indicating success 
+
+       res.status(201).send({
+        success: true, 
+        message: "Doctor Account Applied Successfully"
+       })
+
+    }catch(error){
+        console.log(error) ; 
+        res.status(500).send({
+            success: false,
+            error,
+            message: "Error while applying for doctor"
+        })
+    }
+}
+
+
+module.exports = {loginController, registerController, authController, applyDoctorController} ; 
 
 
 

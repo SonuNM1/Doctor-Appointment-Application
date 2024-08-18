@@ -3,7 +3,8 @@ const express = require("express") ;
 const {
     loginController, 
     registerController,
-    authController
+    authController,
+    applyDoctorController
     } = require("../controllers/userController") ; 
 const authMiddleware = require("../middleware/authMiddleware");
 
@@ -21,6 +22,11 @@ router.post('/register', registerController) ;
 // Auth || POST 
 
 router.post('/getUserData', authMiddleware, authController)
+
+
+// Apply Doctor || POST 
+
+router.post('/apply-doctor', authMiddleware, applyDoctorController) ; // The middleware function is used to authenticate the user before they can submit the 'Apply Doctor' form. it ensures that only logged-in users can access this route. If the user is not authenticated, the middleware will block the request. 
 
 module.exports = router ; 
 

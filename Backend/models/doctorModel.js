@@ -40,6 +40,15 @@ const doctorSchema = new mongoose.Schema({
         type: Number, 
         required: [true, "Fee is required"]
     },
+
+    /*
+    The 'status' field is used to track the current state of a doctor's application within our system. (pending, approved, or rejected). Default is 'pending'
+    */
+
+    status: {
+        type: String, 
+        default: "pending"
+    },
     timings: {
         type: Object, 
         required: [true, "Work timing is required"]
@@ -48,6 +57,6 @@ const doctorSchema = new mongoose.Schema({
     {timestamps: true}
 )
 
-const doctorModel = mongoose.model("users", doctorSchema) ; 
+const doctorModel = mongoose.model("doctors", doctorSchema) ; 
 
 module.exports = doctorModel ; 
