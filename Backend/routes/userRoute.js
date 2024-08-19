@@ -4,7 +4,8 @@ const {
     loginController, 
     registerController,
     authController,
-    applyDoctorController
+    applyDoctorController,
+    getAllNotificationController
     } = require("../controllers/userController") ; 
 const authMiddleware = require("../middleware/authMiddleware");
 
@@ -27,6 +28,14 @@ router.post('/getUserData', authMiddleware, authController)
 // Apply Doctor || POST 
 
 router.post('/apply-doctor', authMiddleware, applyDoctorController) ; // The middleware function is used to authenticate the user before they can submit the 'Apply Doctor' form. it ensures that only logged-in users can access this route. If the user is not authenticated, the middleware will block the request. 
+
+// Notification Doctor || POST 
+
+/*
+The goal is to ensure that when certain actions occur (like a doctor applying for an account), an admin user receives a notification. 
+*/
+
+router.post('/get-all-notification', authMiddleware, getAllNotificationController) ; 
 
 module.exports = router ; 
 

@@ -199,7 +199,69 @@ const applyDoctorController = async (req, res)=>{
 }
 
 
-module.exports = {loginController, registerController, authController, applyDoctorController} ; 
+
+/*
+Notification Controller - handles marking all of a user's notifications as "seen" and updates the database. 
+
+A function in the frontend makes a POST request to this controller to update the notifications. 
+*/
+
+
+const getAllNotificationController = async (req, res)=>{
+
+    try{
+
+        // Step 1: Finding the user in database, based on the userId provided in the req.body
+
+        const user = await userModel.findOne({_id: req.body.userId}) ;
+
+        // Step 2: Get the user's current "seen" notifications and "unseen" notification
+
+        const seennotification = user.seennotification ; // Notification that have already been seen 
+
+        const notification = user.notification ;    // notifications that are still unseen 
+
+        // Step 3: Move all unseen notifications to the seen notifications array 
+
+        seennotification.push(...notification) ;    // add all unseen notifications to the seen notification 
+
+        //Step 4: Clear the notification array as they are now marked as seen 
+
+        user.notification = [] ;
+
+        user.seennotification = notification ; 
+
+        // Step 5: Saving the updated document in the database 
+
+        const updatedUser = await userModel.save() ;
+
+        // Step 6: Send a success response back to the client with the updated user data
+
+        res.status(200).send({
+            success: true,
+            message: "All notification marked as read",
+            data: updatedUser
+        })
+
+    }catch(error){
+        console.log(error) ; 
+        res.status(500).send({
+            message: "Error in Notification",
+            success: false, 
+            error
+        })
+    }
+
+}
+
+
+
+module.exports = {
+    loginController, 
+    registerController,
+    authController, applyDoctorController,
+    getAllNotificationController
+} ; 
 
 
 
