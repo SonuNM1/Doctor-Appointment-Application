@@ -48,7 +48,40 @@ const NotificationPage = () => {
 
     }
 
-    const handleDeleteAllRead = () => {
+    /*
+    Delete Notifications - deleting all read notifications for a user. 
+    */
+
+    const handleDeleteAllRead = async() => {
+        
+        try{
+            dispatch(showLoading()) ; // loading spinner to indicate an operation is in progress
+
+            // Send a POST req to delete all notifications for the current user
+
+            const res = await axios.post('/api/v1/user/delete-all-notification', {
+                userId: user._id    // Sending the user's id to identify whose notifications to delete
+            }, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`    // attach the token 
+                }
+            })
+
+            dispatch(hideLoading()) ; // hiding the loading spinner once the operation is complete
+
+            // checking if the server response indicates success, then display a success message to the user
+
+            if(res.data.success){
+                message.success(res.data.message)
+            }
+            else{
+                message.error(res.data.message)
+            }
+
+        }catch(error){
+            console.log(error) ; 
+            message.error("Something went wrong in notifications");
+        }
 
     }
 
@@ -81,9 +114,38 @@ const NotificationPage = () => {
         </Tabs.TabPane>
 
         <Tabs.TabPane tab="Read" key={1}>
+
+            {/*d-flex makes the container a flexbox, and 'justify-content-end' aligns the content to the right*/}
+
             <div className='d-flex justify-content-end'>
-                <h4 className='p-2' onClick={handleDeleteAllRead} >Delete All Read</h4>
+
+            {/*h4 element that acts as a button to delete all read notifications. The 'handleDeleteAllRead' function will delete all notifications that have been marked as "read" */}
+
+                <h4 className='p-2 text-primary' style={{cursor: 'pointer'}}
+                onClick={handleDeleteAllRead} >Delete All Read</h4>
+
             </div>
+
+            {/*Displaying Read Notifications. The code uses optional chaining to safely access the 'seennotification' array from the 'user' object. This array contains all the notifications that the user has marked as read. 
+            
+            The 'map' function iterates over each notification in the 'seennotification' array and returns a 'div' representing each notification. 
+            */}
+
+            {
+
+                user?.seennotification.map(notificationMsg => (
+                    <div className='card' style={{cursor: "pointer"}} >
+                       <div
+                        className='card-text'
+                        onClick={()=> {
+                            navigate(notificationMsg.onClickPath)
+                        }}
+                       >
+                            {notificationMsg.message}
+                        </div>
+                    </div>
+                ))
+            }
         </Tabs.TabPane>
 
     </Layout>
@@ -91,3 +153,17 @@ const NotificationPage = () => {
 }
 
 export default NotificationPage
+
+
+
+
+/*
+Tabs.TabPane 
+
+    - This is a component from the Ant Design ('antd') library that represents a single tab in a tabbed interface 
+
+    - The 'tab' prop specifies the label of tab, which is 'Read' and 'unRead' here 
+
+    - The 'key' prop uniquely identifies the tab. Here it's 0 and 1
+
+*/

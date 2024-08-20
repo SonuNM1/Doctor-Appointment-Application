@@ -5,7 +5,8 @@ const {
     registerController,
     authController,
     applyDoctorController,
-    getAllNotificationController
+    getAllNotificationController,
+    deleteAllNotificationController
     } = require("../controllers/userController") ; 
 const authMiddleware = require("../middleware/authMiddleware");
 
@@ -36,6 +37,11 @@ The goal is to ensure that when certain actions occur (like a doctor applying fo
 */
 
 router.post('/get-all-notification', authMiddleware, getAllNotificationController) ; 
+
+
+// Delete Notification || POST 
+
+router.post('/delete-all-notification', authMiddleware, deleteAllNotificationController) ; 
 
 module.exports = router ; 
 

@@ -255,12 +255,56 @@ const getAllNotificationController = async (req, res)=>{
 }
 
 
+/*
+DELETE NOTIFICATION
+*/
+
+const deleteAllNotificationController = async (req, res) => {
+
+    try{
+
+        const user = await userModel.findOne({_id: req.body.userId}) ;  // finding the user in the database by their ID
+
+        if(!user){
+            return res.status(404).send({
+                success: false, 
+                message: "User not found",
+            })
+        }
+
+        // Clearing notifications by setting them to empty arrays
+
+        user.notification = [] ; 
+        user.seennotification = [] ; 
+
+        const updatedUser = await user.save() ;  // saving the updated user document back to the database
+
+        updatedUser.password = undefined ;   // used to prevent sending the user's password back in the response. Remove the password from the user object before sending it back in the response to the client. We don't want to expose sensitive information like password in API responses. When we fetch a user from the database, the 'user' object includes all the fields stored in the database, including the password. Even though the password is hashed and not stored as plain text, it's still a best practice to exclude it from any response that goes back to the client. 
+
+        // Sending a success response back to the client
+
+        res.status(200).send({
+            success: true,
+            message: "Notifications deleted successfully",
+            data: updateUser 
+        })
+
+    }catch(error){
+        console.log(error) ; 
+        res.status(500).send({
+            success: false , 
+            message: "Unable to delete all notification",
+        })
+    } 
+}
+
 
 module.exports = {
     loginController, 
     registerController,
     authController, applyDoctorController,
-    getAllNotificationController
+    getAllNotificationController,
+    deleteAllNotificationController
 } ; 
 
 
