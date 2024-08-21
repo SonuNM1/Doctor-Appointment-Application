@@ -8,6 +8,9 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
 import ApplyDoctor from "./pages/ApplyDoctor";
 import NotificationPage from "./pages/NotificationPage";
+import Users from "./pages/admin/Users";
+import Doctors from "./pages/admin/Doctors";
+import Profile from "./pages/admin/doctor/Profile";
 
 function App() {
   const { loading } = useSelector((state) => state.alerts); // extracts 'loading' state from the Redux store. The 'state.alerts' part accesses the 'alerts' slice in the Redux store, and 'loading' is the property in the slice. This will track whether the app is currently in a loading state based on the Redux logic
@@ -61,6 +64,33 @@ function App() {
                 <PublicRoute>
                   <Register />
                 </PublicRoute>
+              }
+            />
+            <Route
+              path="/admin/users"
+              element={
+                <PublicRoute>
+                  <Users />
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="/admin/doctors"
+              element={
+                <PublicRoute>
+                  <Doctors />
+                </PublicRoute>
+              }
+            />
+
+              {/*route for fetching and displaying the doctor's profile data, 'id' is the unique identifier of the doctor whose profile is being processed*/}
+
+            <Route
+              path="/doctor/profile/:id"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
               }
             />
           </Routes>

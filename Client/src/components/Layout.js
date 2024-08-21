@@ -17,6 +17,29 @@ const handleLogout=()=>{
 }
 
 
+// ******************* Doctor Menu *************
+
+ const doctorMenu = [
+  {
+      name: "Home",
+      path: '/',
+      icon: 'fa-solid fa-house'
+  },
+  {
+      name: 'Appointments',
+      path: '/appointments',
+      icon: 'fa-solid fa-list'
+  },
+  {
+      name: 'Profile',
+      path: `/doctor/profile/${user?._id}`,
+      icon: 'fa-solid fa-user'
+  }
+]
+
+// ****************** Doctor Menu *************
+
+
 const Layout = ({ children }) => {
 
   const {user} = useSelector(state => state.user) ; 
@@ -24,7 +47,7 @@ const Layout = ({ children }) => {
 
   // Rendering menu list 
 
-  const SidebarMenu = user?.isAdmin ? adminMenu : userMenu ; 
+  const SidebarMenu = user?.isAdmin ? adminMenu : user?.isDoctor? doctorMenu : userMenu ; 
 
   return (
     <>

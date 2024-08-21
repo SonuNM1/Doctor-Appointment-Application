@@ -46,7 +46,7 @@ const ApplyDoctor = () => {
       // Check if reponse from the server indicates success 
 
       if (res.data.success) {
-        message.success(res.data.success);    // if success, display a success message to the user
+        message.success(res.data.message);    // if success, display a success message to the user
         navigate("/");
       } else {
         message.error(res.data.success);
