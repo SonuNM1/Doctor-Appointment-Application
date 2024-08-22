@@ -5,6 +5,7 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { Col, Form, Input, Row, TimePicker, message } from "antd";
 import { showLoading, hideLoading } from "../../redux/features/alertSlice";
+import moment from "moment" ; 
 
 const Profile = () => {
     const { user } = useSelector(state => state.user); // Get the current user from Redux state
@@ -20,7 +21,11 @@ const Profile = () => {
             
             const res = await axios.post(
                 "/api/v1/doctor/updateProfile",
-                { ...values, userId: user._id }, // Send form data along with user ID
+                { ...values, userId: user._id, 
+                    timings: [
+                    moment(values.timings[0]).format("HH:mm"),
+                    moment(values.timings[1]).format("HH:mm")
+                ] }, // Send form data along with user ID
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`, // Authorization header with JWT token
@@ -71,7 +76,13 @@ const Profile = () => {
         <Layout>
             <h1>Manage Profile</h1>
             {doctor ? ( // Render form if doctor data is available
-                <Form layout="vertical" onFinish={handleFinish} className="m-3" initialValues={doctor}>
+                <Form layout="vertical" onFinish={handleFinish} className="m-3" initialValues={{
+                    ...doctor,
+                    timings: [
+                        moment(doctor.timings[0]).format("HH:mm"),
+                        moment(doctor.timings[1]).format("HH:mm"),
+                    ]
+                }}>
                     <h6>Personal Details</h6>
                     <Row gutter={20}>
                         <Col xs={24} md={24} lg={8}>
@@ -176,11 +187,11 @@ const Profile = () => {
                             </Form.Item>
                         </Col>
 
-                        {/*<Col xs={24} md={24} lg={8}>
+                        <Col xs={24} md={24} lg={8}>
                             <Form.Item label="Work timing" name="timings" required>
                                 <TimePicker.RangePicker format="HH:mm" />
                             </Form.Item>
-                        </Col>*/}
+                        </Col>
 
                         <Col xs={24} md={24} lg={8}></Col>
                         <Col xs={24} md={24} lg={8}>
