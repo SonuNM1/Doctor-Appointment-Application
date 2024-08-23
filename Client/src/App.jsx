@@ -11,6 +11,7 @@ import NotificationPage from "./pages/NotificationPage";
 import Users from "./pages/admin/Users";
 import Doctors from "./pages/admin/Doctors";
 import Profile from "./pages/admin/doctor/Profile";
+import BookingPage from "./pages/BookingPage";
 
 function App() {
   const { loading } = useSelector((state) => state.alerts); // extracts 'loading' state from the Redux store. The 'state.alerts' part accesses the 'alerts' slice in the Redux store, and 'loading' is the property in the slice. This will track whether the app is currently in a loading state based on the Redux logic
@@ -90,6 +91,15 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Profile />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/doctor/book-appointment/:doctorId"
+              element={
+                <ProtectedRoute>
+                  <BookingPage />
                 </ProtectedRoute>
               }
             />

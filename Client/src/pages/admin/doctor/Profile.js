@@ -7,6 +7,7 @@ import { Col, Form, Input, Row, TimePicker, message } from "antd";
 import { showLoading, hideLoading } from "../../redux/features/alertSlice";
 import moment from "moment" ; 
 
+
 const Profile = () => {
     const { user } = useSelector(state => state.user); // Get the current user from Redux state
     const [doctor, setDoctor] = useState(null); // State to hold doctor data
@@ -15,6 +16,8 @@ const Profile = () => {
     const params = useParams(); // Hook to get URL parameters
 
     // Form submit handler function to update doctor profile
+
+
     const handleFinish = async (values) => {
         try {
             dispatch(showLoading()); // Show loading spinner
@@ -48,7 +51,10 @@ const Profile = () => {
         }
     };
 
+
     // Function to fetch doctor details
+
+
     const getDoctorInfo = async () => {
         try {
             const res = await axios.post("/api/v1/doctor/getDoctorInfo", {
@@ -67,7 +73,10 @@ const Profile = () => {
         }
     };
 
+
     // Fetch doctor details when the component is mounted
+
+
     useEffect(() => {
         getDoctorInfo();
     }, []);

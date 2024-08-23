@@ -28,6 +28,11 @@ const ApplyDoctor = () => {
         {
           ...values,    // spreading the form values (fistName, lastName, etc)
           userId: user._id,   // including the userId of currently authenticated user 
+
+          timings: [
+            moment(values.timings[0]).format("HH:mm"),
+            moment(values.timings[1]).format("HH:mm")
+          ]
         },
 
         // including the authorization header with the brearer token

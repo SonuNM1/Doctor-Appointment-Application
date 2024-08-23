@@ -299,12 +299,39 @@ const deleteAllNotificationController = async (req, res) => {
 }
 
 
+// GET all doctors 
+
+const getAllDoctorsController = async (req, res)=>{
+    try{
+
+        // Fetch all doctors from the database where their status is 'approved'. This field is used to indicate the doctor's profile has been approved by an admin. Only approved doctors are included in the result. 
+
+        const doctors = await doctorModel.find({status: 'approved'}) ; 
+
+        // If successful, send back a response eith the list of doctors 
+
+        res.status(200).send({
+            success: true, 
+            message: "Doctors lists fetched successfully",
+            data: doctors
+        })
+    }catch(error){
+        console.log(error) ; 
+        res.status(500).send({
+            success: false, 
+            error, 
+            message: "Error while fetching doctor"
+        })
+    }
+}
+
 module.exports = {
     loginController, 
     registerController,
     authController, applyDoctorController,
     getAllNotificationController,
-    deleteAllNotificationController
+    deleteAllNotificationController,
+    getAllDoctorsController
 } ; 
 
 
