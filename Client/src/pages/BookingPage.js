@@ -8,14 +8,21 @@ import Layout from '../components/Layout' ;
 import {useParams} from "react-router-dom" ; 
 import axios from "axios" ; 
 import { DatePicker, TimePicker } from 'antd';
+import {useDispatch} from "react-redux" ; 
+import moment from "moment" ; 
+import {showLoading, hideLoading} from '../redux/features/alertSlice' ; 
 
 
 const BookingPage = () => {
 
+    const {user} = useSelector(state => state.user) ; 
+
     const [doctors, setDoctors] = useState([]) ;    // state to store the doctor's details 
     const [date, setDate] = useState() ;        // state to store the selected date 
-    const [timings, setTimings] = useState() ;  // state to store the selected time range 
+    const [time, setTime] = useState() ;  // state to store the selected time range 
     const [isAvailable, setIsAvailable] = useState() ;  // state to store the availability status 
+
+    const dispatch = useDispatch() ; 
 
     // retrieving the doctorId from the URL parameters 
 
@@ -37,6 +44,43 @@ const BookingPage = () => {
                 setDoctors(res.data.data) ; 
             }
         }catch(error){
+            console.log(error) ; 
+        }
+    }
+
+
+    // ****************** Book appointment function 
+
+
+    const handleBooking = async () => {
+        try{
+            dispatch(showLoading()) ; // dispatch an action to show a loading spinner/indicator
+
+            // Send a POST req to the server to book an appointment
+
+            const res = await axios.post('/api/v1/user/book-appointment', {
+                doctorId: params.doctorId,  // Id of the doctor being booked 
+                userId: user._id,   // Iid of the user making the booking 
+                doctorInfo: doctors,    // information about the doctor (name, specialization)
+                date: date, // selected date for the appointment 
+                userInfo: user, // information about the user (name, contact details)
+                time: time // selected time for appointment 
+            }, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            })
+
+            dispatch(hideLoading()) ; 
+
+            // if the booking is successful, show a success message to the user 
+
+            if(res.data.success){
+                message.success(res.data.message)
+            }
+
+        }catch(error){
+            dispatch(hideLoading())
             console.log(error) ; 
         }
     }
@@ -76,12 +120,9 @@ const BookingPage = () => {
 
                             {/*TimePicker component to select the appointment time range*/}
 
-                            <TimePicker.RangePicker format="HH:mm"
+                            <TimePicker  format="HH:mm"
                             className="m-2"
-                            onChange={(values) => setTimings([
-                                moment(values[0]).format("HH:mm"),
-                                moment(values[1].format("HH:mm"))
-                            ])}    
+                            onChange={(value) => setTime(moment(value).format("HH:mm"))}    
                             />
 
                             {/*Button to check the availability of the doctor*/}
@@ -89,6 +130,11 @@ const BookingPage = () => {
                             <button
                             className="btn btn-primary mt-2"
                             >Check Availability</button>
+
+                            <button
+                            className="btn btn-dark mt-2"
+                            onClick={handleBooking}
+                            >Book Now</button>
                         </div>
 
                     </div>

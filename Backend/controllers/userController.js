@@ -3,7 +3,8 @@ const userModel = require('../models/userModels') ;
 const bcrypt = require("bcrypt") ; 
 const jwt = require("jsonwebtoken") ; 
 const doctorModel = require("../models/doctorModel") ; 
-
+const appointmentModel = require("../models/appointmentModel") ; 
+import moment from "moment" ; 
 
 // Register callback
 
@@ -325,13 +326,68 @@ const getAllDoctorsController = async (req, res)=>{
     }
 }
 
+
+
+// Book appointment Controller - users can apply to a specific doctor
+
+
+const bookAppointmentController = async (req, res) => {
+    try{
+
+        req.body.date = moment(req.body.date, "DD-MM-YYYY").toISOString() ; 
+        req.body.time = moment(req.body.time, "HH:mm").toISOString() ; 
+
+        
+        // Set the status of the appointment to "pending" by default 
+
+        req.body.status = "pending" ; 
+
+        // Create a new appointment instance with the data from the request body 
+
+        const newAppointment = new appointmentModel(req.body) ; 
+
+        // Save the appointment to the database 
+
+        await newAppointment.save() ;
+        
+        // Find the user who made the appointment request based on the userId
+
+        const user = await userModel.findOne({_id: req.body.doctorInfo.userId}) ;
+
+        // add a notification to the user's notification array 
+
+        user.notification.push({
+            type: 'New-appointment-request',
+            message: `A new appointment request from ${req.body.userInfo.name}`,
+            onClickPath: '/user/appointments' // path the user will be directed to when clicking the notification
+        })
+
+        await user.save() ; // save the updated user information in the database 
+
+        // Respond with a success message 
+
+        res.status(200).send({
+            success: true,
+            message: "Appointment booked successfully"
+        })
+    }catch(error){
+        console.log(error); 
+        res.status(500).send({
+            success: true,
+            message: "Error while booking appointment with doctor",
+            error
+        })
+    }
+}
+
 module.exports = {
     loginController, 
     registerController,
     authController, applyDoctorController,
     getAllNotificationController,
     deleteAllNotificationController,
-    getAllDoctorsController
+    getAllDoctorsController,
+    bookAppointmentController
 } ; 
 
 

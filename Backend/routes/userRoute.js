@@ -7,7 +7,8 @@ const {
     applyDoctorController,
     getAllNotificationController,
     deleteAllNotificationController,
-    getAllDoctorsController
+    getAllDoctorsController,
+    bookAppointmentController
     } = require("../controllers/userController") ; 
 const authMiddleware = require("../middleware/authMiddleware");
 
@@ -50,9 +51,12 @@ router.post('/delete-all-notification', authMiddleware, deleteAllNotificationCon
 
 router.get('/getAllDoctors', authMiddleware, getAllDoctorsController)
 
+
+// Book Appointment 
+
+router.post('/book-appointment', authMiddleware, bookAppointmentController) ; 
+
 module.exports = router ; 
-
-
 /*
 
 - Middleware functions are used to process requests before they reach the actual route handler. 
