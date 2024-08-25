@@ -332,6 +332,7 @@ const getAllDoctorsController = async (req, res)=>{
 
 
 const bookAppointmentController = async (req, res) => {
+
     try{
 
         req.body.date = moment(req.body.date, "DD-MM-YYYY").toISOString() ; 
@@ -380,6 +381,66 @@ const bookAppointmentController = async (req, res) => {
     }
 }
 
+
+// check booking availability - check whether a specific time slot is available for booking an appointment with the doctor. It takes date, timeand doctor Id from the request body and queries the database to see if there are any existing appointments that would conflict with the requested time slot. If no conflicting appointments are found, it indicates that the time slot is available 
+
+
+const bookingAvailabilityController = async ()=> {
+    try{
+
+        // Parse the date from the req body to ISO format for querying the database 
+
+        const date = moment(req.body.date, "DD-MM-YY").toISOString() ; 
+
+        // Calculate the time range for the appointment by subtracting one hour from the requested time
+
+        const fromTime = moment(req.body.time,"HH:mm").subtract(1, 'hours').toISOString() ; 
+
+        const toTime = moment(req.body.time, "HH:mm").add(1, 'hours').toISOString(); 
+
+        // Get the doctor's id from the request body 
+
+        const doctorId = req.body.doctorId;
+
+        // query the database to find any existing appointments that overlap with the requested time
+
+        const appointments = await appointmentModel.find({
+            doctorId,   // match appointments for the specified doctor   
+            date,   // match appointments for the specified date 
+            time: {
+                $gte: fromTime, // match appointments starting after or at fromTime 
+                $lte: toTime    // match appointments starting before or at toTime
+            }
+        })
+
+        // If any appointments are found at the time slot, it means the slot is not available 
+
+        if(appointments.length > 0){
+            return res.status(200).send({
+                message:"Appointments not available at this time",
+                success: true
+            })
+        }
+
+        // if no appointments are found, the slot is available 
+
+        else{
+            return res.status(500).send({
+                success: true,
+                message: "Appointment available"
+            })
+        }
+
+    }catch(error){
+        console.log(error) ;
+        res.status(500).send({
+            success: false,
+            message: "Error in booking",
+            error 
+        }) 
+    }
+}
+
 module.exports = {
     loginController, 
     registerController,
@@ -387,7 +448,8 @@ module.exports = {
     getAllNotificationController,
     deleteAllNotificationController,
     getAllDoctorsController,
-    bookAppointmentController
+    bookAppointmentController,
+    bookingAvailabilityController
 } ; 
 
 

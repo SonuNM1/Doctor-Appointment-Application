@@ -54,6 +54,12 @@ const BookingPage = () => {
 
     const handleBooking = async () => {
         try{
+            setIsAvailable(true) ; 
+            
+            if(!date && !time){
+                return alert ("Date and Time required")
+            }
+
             dispatch(showLoading()) ; // dispatch an action to show a loading spinner/indicator
 
             // Send a POST req to the server to book an appointment
@@ -81,6 +87,36 @@ const BookingPage = () => {
 
         }catch(error){
             dispatch(hideLoading())
+            console.log(error) ; 
+        }
+    }
+
+
+    // ***** Handle availability 
+
+
+    const handleAvailability = async () => {
+        try{
+            const res = await axios.post('/api/v1/user/booking-availability', {
+                doctorId: params.doctorId, date, time
+            }, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            } );
+
+            dispatch(hideLoading()) ; 
+
+            if(res.data.success){
+                setIsAvailable(true) ;
+                message.success(res.data.message)
+            }
+            else{
+                message.error(res.data.message)
+            }
+
+        }catch(error){
+            dispatch(hideLoading()) ;
             console.log(error) ; 
         }
     }
@@ -113,28 +149,39 @@ const BookingPage = () => {
                             {/*DatePicker component to select the appointment date*/}
 
                             <DatePicker
+                            aria-required={"true"}
                             className="m-2"
                              format="DD-MM-YYYY"
-                            onChange={(value)=> setDate(moment(value).format("DD-MM-YYYY"))}    
+                            onChange={(value)=> {
+                                setDate(moment(value).format("DD-MM-YYYY"))
+                            } }    
                             />
 
                             {/*TimePicker component to select the appointment time range*/}
 
-                            <TimePicker  format="HH:mm"
+                            <TimePicker 
+                            aria-required={"true"}
+                            format="HH:mm"
                             className="m-2"
-                            onChange={(value) => setTime(moment(value).format("HH:mm"))}    
+                            onChange={(value) => {
+                                setTime(moment(value).format("HH:mm"))
+                            } }    
                             />
 
                             {/*Button to check the availability of the doctor*/}
 
                             <button
                             className="btn btn-primary mt-2"
+                            onClick={handleAvailability}
                             >Check Availability</button>
 
-                            <button
+                            {
+                                    <button
                             className="btn btn-dark mt-2"
                             onClick={handleBooking}
                             >Book Now</button>
+                                
+                            }
                         </div>
 
                     </div>
