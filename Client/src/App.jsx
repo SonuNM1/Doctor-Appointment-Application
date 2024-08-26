@@ -12,6 +12,8 @@ import Users from "./pages/admin/Users";
 import Doctors from "./pages/admin/Doctors";
 import Profile from "./pages/admin/doctor/Profile";
 import BookingPage from "./pages/BookingPage";
+import Appointments from "./pages/Appointments";
+import DoctorAppointments from './pages/admin/doctor/DoctorAppointments';
 
 function App() {
   const { loading } = useSelector((state) => state.alerts); // extracts 'loading' state from the Redux store. The 'state.alerts' part accesses the 'alerts' slice in the Redux store, and 'loading' is the property in the slice. This will track whether the app is currently in a loading state based on the Redux logic
@@ -27,14 +29,6 @@ function App() {
           <Spinner />
         ) : (
           <Routes>
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <HomePage />
-                </ProtectedRoute>
-              }
-            />
             <Route
               path="/apply-doctor"
               element={
@@ -84,7 +78,7 @@ function App() {
               }
             />
 
-              {/*route for fetching and displaying the doctor's profile data, 'id' is the unique identifier of the doctor whose profile is being processed*/}
+            {/*route for fetching and displaying the doctor's profile data, 'id' is the unique identifier of the doctor whose profile is being processed*/}
 
             <Route
               path="/doctor/profile/:id"
@@ -100,6 +94,33 @@ function App() {
               element={
                 <ProtectedRoute>
                   <BookingPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/appointments"
+              element={
+                <ProtectedRoute>
+                  <Appointments />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <HomePage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/doctor-appointments"
+              element={
+                <ProtectedRoute>
+                  <DoctorAppointments/>
                 </ProtectedRoute>
               }
             />

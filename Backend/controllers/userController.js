@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt") ;
 const jwt = require("jsonwebtoken") ; 
 const doctorModel = require("../models/doctorModel") ; 
 const appointmentModel = require("../models/appointmentModel") ; 
-import moment from "moment" ; 
+const moment = require("moment") ; 
 
 // Register callback
 
@@ -441,6 +441,27 @@ const bookingAvailabilityController = async ()=> {
     }
 }
 
+
+const userAppointmentController = async(req, res) =>{
+    try{
+        const appointments = await appointmentModel.find({userId:req.body.userId}) ; 
+
+        res.status(200).send({
+            success: true , 
+            messsage: "Users appointment fetched successfully",
+            data: appointments
+        })
+
+    }catch(error){
+        console.log(error) ; 
+        return res.status(500).send({
+            success:false,
+            error,
+            message: "Error in User Appointment"
+        })
+    }
+}
+
 module.exports = {
     loginController, 
     registerController,
@@ -449,7 +470,8 @@ module.exports = {
     deleteAllNotificationController,
     getAllDoctorsController,
     bookAppointmentController,
-    bookingAvailabilityController
+    bookingAvailabilityController,
+    userAppointmentController
 } ; 
 
 
