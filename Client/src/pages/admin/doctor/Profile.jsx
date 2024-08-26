@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import Layout from './../../../components/Layout';
+import Layout from '../../../components/Layout';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { Col, Form, Input, Row, TimePicker, message } from "antd";
-import { showLoading, hideLoading } from "../../redux/features/alertSlice";
+import { showLoading, hideLoading } from "../../../redux/features/alertSlice";
 import moment from "moment" ; 
 
 

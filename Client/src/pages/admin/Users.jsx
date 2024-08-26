@@ -1,6 +1,6 @@
 
 import React, {useEffect, useState} from 'react' ; // useState for managing state, and useEffect for running side effects (like fetching data) when the component loads
-import Layout from "./../../components/Layout" ; // Layout wrapper contains header, footer
+import Layout from "../../components/Layout" ; // Layout wrapper contains header, footer
 import axios from "axios" ; 
 import { Table } from 'antd'; // importing the Table component from the Ant Design, makes it easy to display data in a table format 
 
